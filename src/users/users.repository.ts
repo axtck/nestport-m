@@ -1,42 +1,62 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'src/core/repository';
 import { Id, Null, QueryString } from 'src/types/core.types';
-import { ILoginUserDao, ICreateUserDao, IUserDao } from './interfaces/daos/user.dao';
 import { CreateUserDto } from './interfaces/dtos/create-user.dto';
-import { IUser } from './interfaces/models/user';
-import { CreateUserDtoMapper } from './interfaces/mappers/create-user-dto.mapper';
-import { UserDaoMapper } from './interfaces/mappers/user-dao.mapper';
 import { ILoginUser } from './interfaces/models/auth-user';
-import { AuthUserDaoMapper } from './interfaces/mappers/auth-user-dao.mapper';
+import { IUser } from './interfaces/models/user';
 
 @Injectable()
 export class UsersRepository extends Repository {
   public async findAll(): Promise<IUser[]> {
-    const findQuery: QueryString = 'SELECT u.username, u.email FROM users u';
-    const userDaos: IUserDao[] = await this.database.query<IUserDao>(findQuery);
-    return userDaos.map(UserDaoMapper.toModel);
+    const findQuery: QueryString = 'SELECT u.id, u.username, u.email FROM users u';
+    const userDbs = await this.database.query<IUserDb>(findQuery);
+    return userDbs.map(this.toUser);
   }
 
-  public async findOne(userId: Id): Promise<IUser> {
-    const findQuery: QueryString = 'SELECT u.id, u.username, u.email FROM users u WHERE u.id = $1';
-    const userDao: IUserDao = await this.database.queryOne<IUserDao>(findQuery, [userId]);
-    return UserDaoMapper.toModel(userDao);
+  public async findOne(userId: Id): Promise<Null<IUser>> {
+    const findQuery: QueryString = 'SELECT u.id, u.username, u.email FROM users u WHERE u.id = ?';
+    const userDb: Null<IUserDb> = await this.database.queryOne<IUserDb>(findQuery, [userId]);
+    return userDb ? this.toUser(userDb) : null;
   }
 
   public async findOneByKey(type: 'username' | 'email', key: string): Promise<Null<ILoginUser>> {
-    const findQuery: QueryString = `SELECT u.id, u.username, u.email, u.password FROM users u WHERE u.${type} = $1`;
-    const userDao: Null<ILoginUserDao> = await this.database.queryOneOrDefault<ILoginUserDao>(findQuery, [key]);
-    return userDao ? AuthUserDaoMapper.toModel(userDao) : null;
+    const findQuery: QueryString = `SELECT u.id, u.username, u.email, u.password FROM users u WHERE u.${type} = ?`;
+    const loginUserDb: Null<ILoginUserDb> = await this.database.queryOne<ILoginUserDb>(findQuery, [key]);
+    return loginUserDb ? this.toLoginUser(loginUserDb) : null;
   }
 
   public async create(createUser: CreateUserDto): Promise<void> {
-    const createUserDao: ICreateUserDao = CreateUserDtoMapper.toCreateUserDao(createUser);
-    const createQuery: QueryString = 'INSERT INTO "users" ("username", "email", "password") VALUES ($1, $2, $3)';
-    await this.database.query(createQuery, [createUserDao.username, createUserDao.email, createUserDao.password]);
+    const createQuery: QueryString = 'INSERT INTO "users" ("username", "email", "password") VALUES (?, ?, ?)';
+    await this.database.query(createQuery, [createUser.username, createUser.email, createUser.password]);
   }
 
   public async remove(userId: Id): Promise<void> {
-    const removeQuery: QueryString = 'DELETE FROM "users" WHERE "id" = $1';
+    const removeQuery: QueryString = 'DELETE FROM "users" WHERE "id" = ?';
     await this.database.query(removeQuery, [userId]);
   }
+
+  private toUser(userDb: IUserDb): IUser {
+    return {
+      id: userDb.id,
+      username: userDb.username,
+      email: userDb.email,
+    };
+  }
+
+  private toLoginUser(loginUserDb: ILoginUserDb): ILoginUser {
+    return {
+      ...this.toUser(loginUserDb),
+      password: loginUserDb.password,
+    };
+  }
+}
+
+interface IUserDb {
+  id: Id;
+  username: string;
+  email: string;
+}
+
+interface ILoginUserDb extends IUserDb {
+  password: string;
 }

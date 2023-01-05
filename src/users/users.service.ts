@@ -19,7 +19,8 @@ export class UsersService {
   }
 
   public async findOne(userId: Id): Promise<IUser> {
-    const data: IUser = await this.usersRepository.findOne(userId);
+    const data: Null<IUser> = await this.usersRepository.findOne(userId);
+    if (!data) throw new Error('User not found'); // TODO: throw fitting error
     return data;
   }
 

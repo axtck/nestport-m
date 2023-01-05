@@ -21,7 +21,6 @@ export class ConfigHelper {
       host: this.configService.get<string>('database.host') as string,
       port: this.configService.get<number>('database.port') as number,
       database: this.configService.get<string>('database.database') as string,
-      schema: this.configService.get<string>('database.schema') as string,
       user: this.configService.get<string>('database.user') as string,
       password: this.configService.get<string>('database.password') as string,
     };
@@ -59,7 +58,6 @@ export interface IDatabaseConfig {
   host: string;
   port: number;
   database: string;
-  schema: string;
   user: string;
   password: string;
 }
