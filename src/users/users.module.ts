@@ -6,8 +6,8 @@ import { UsersService } from './users.service';
 import { ConfigHelper } from 'src/config/config.helper';
 
 @Module({
-  providers: [UsersService, UsersRepository, ConfigHelper],
   imports: [DatabaseModule],
+  providers: [UsersService, UsersRepository, ConfigHelper],
   controllers: [UsersController],
   exports: [UsersService],
 })

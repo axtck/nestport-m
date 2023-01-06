@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
-import { EnvironmentConstants } from 'src/common/environment.constants';
 import { Environment } from 'src/common/environment.types';
 import { getEnvPath } from 'src/common/helpers/environment.helper';
 import { isEnumValue } from 'src/types/guards/enums';
@@ -12,9 +11,9 @@ import { authConfig } from './auth.config';
 import { ConfigHelper } from './config.helper';
 
 const environment: string | undefined = process.env.SERVER_ENV;
-if (!isEnumValue<Environment>(environment, EnvironmentConstants.environmentValues)) {
+if (!isEnumValue<Environment>(environment, Object.values(Environment))) {
   throw new Error(
-    `Environment '${environment}' not valid, run ${EnvironmentConstants.environmentValues
+    `Environment '${environment}' not valid, run ${Object.values(Environment)
       .map((e) => `'export SERVER_ENV=${e}'`)
       .join(' OR ')} on host machine`,
   );
@@ -23,7 +22,7 @@ if (!isEnumValue<Environment>(environment, EnvironmentConstants.environmentValue
 const envFilePath: string = getEnvPath(path.join('src', 'common', 'environments'), environment);
 const validationSchema = Joi.object({
   // app
-  SERVER_ENV: Joi.valid(...EnvironmentConstants.environmentValues).required(),
+  SERVER_ENV: Joi.valid(...Object.values(Environment)).required(),
   SERVER_PORT: Joi.number().required(),
 
   // database

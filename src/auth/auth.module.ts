@@ -28,8 +28,8 @@ import { ConfigModule } from 'src/config/config.module';
       },
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
-  exports: [AuthService],
+  providers: [AuthService, LocalStrategy, JwtStrategy], // TODO: check if strategies need to be in providers array
   controllers: [AuthController],
+  exports: [AuthService],
 })
 export class AuthModule {}

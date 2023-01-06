@@ -1,15 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-  UseGuards,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { User } from 'src/decorators/user.decorator';
 import { Id } from 'src/types/core.types';
@@ -40,8 +29,9 @@ export class UsersController {
     await this.userService.create(createUserDto);
   }
 
-  @Delete('/:id')
-  public async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+  @UseGuards(JwtAuthGuard)
+  @Delete('/')
+  public async remove(@User('id') id: Id): Promise<void> {
     await this.userService.remove(id);
   }
 }

@@ -22,8 +22,8 @@
     "env:dev": "export NODE_ENV=development",
     "env:prod": "export NODE_ENV=production",
     "migration:create": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:create",
-    "migration:up": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:run -d src/orm/ormconfig.ts",
-    "migration:down": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:revert -d src/orm/ormconfig.ts"
+    "migration:up": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:run -d src/ormconfig.ts",
+    "migration:down": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:revert -d src/ormconfig.ts"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -32,7 +32,6 @@
     "@nestjs/jwt": "^9.0.0",
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
-    "@nestjs/typeorm": "^9.0.1",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",

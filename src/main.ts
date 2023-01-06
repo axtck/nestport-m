@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { ConfigHelper, IAppConfig } from './config/config.helper';
-import { connectionSource } from './orm/ormconfig';
+import { connectionSource } from './ormconfig';
 
 const bootstrap = async (): Promise<void> => {
   await connectionSource.initialize();
