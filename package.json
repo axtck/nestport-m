@@ -23,7 +23,8 @@
     "env:prod": "export NODE_ENV=production",
     "migration:create": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:create",
     "migration:up": "npm run build && ./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:run -d src/ormconfig.ts",
-    "migration:down": "npm run build && ./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:revert -d src/ormconfig.ts"
+    "migration:down": "npm run build && ./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:revert -d src/ormconfig.ts",
+    "compose": "docker-compose build --no-cache && docker-compose up"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
