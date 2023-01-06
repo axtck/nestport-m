@@ -39,9 +39,8 @@ export class Init1673006763936 implements MigrationInterface {
     `);
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query('DROP TABLE IF EXISTS user_roles');
-    await queryRunner.query('DROP TABLE IF EXISTS users');
-    await queryRunner.query('DROP TABLE IF EXISTS roles');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    throw new Error('This migration should not be reverted');
   }
 }
