@@ -20,7 +20,7 @@ export class UsersService {
 
   public async findOne(userId: Id): Promise<IUser> {
     const data: Null<IUser> = await this.usersRepository.findOne(userId);
-    if (!data) throw new Error('User not found'); // TODO: throw fitting error
+    if (!data) throw new Error('User not found');
     return data;
   }
 

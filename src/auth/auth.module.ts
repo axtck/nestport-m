@@ -28,7 +28,7 @@ import { ConfigModule } from 'src/config/config.module';
       },
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy], // TODO: check if strategies need to be in providers array
+  providers: [AuthService, LocalStrategy, JwtStrategy],
   controllers: [AuthController],
   exports: [AuthService],
 })

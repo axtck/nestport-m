@@ -20,7 +20,7 @@ export class AuthService {
 
   public async validateUser(username: string, password: string): Promise<Null<IUserIdentifier>> {
     const user: Null<ILoginUser> = await this.usersService.findOneByUsername(username);
-    if (!user) return null; // TODO: throw not found
+    if (!user) return null;
 
     const isMatch: boolean = await bcrypt.compare(password, user.password);
     if (!isMatch) return null;
