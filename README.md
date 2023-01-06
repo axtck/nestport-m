@@ -4,12 +4,12 @@
 
 Start a Postgres container
 
-`docker run -d --name pg-nestport -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=admin -e PGDATA=/var/lib/postgresql/data/pgdata --restart unless-stopped -v $HOME/dockervols/pg-nestport:/var/lib/postgresql/data -p 5432:5432 postgres:14-alpine`
+`docker run -d --name mysql-dev -v $HOME/dockervols/mysql-dev:/var/lib/mysql/ -e MYSQL_ROOT_PASSWORD=admin --restart unless-stopped -p 3307:3306 mysql:8 --default-authentication-plugin=mysql_native_password`
 
 Create a develoment database
 
 ```sql
-CREATE DATABASE developmentdb;
+CREATE DATABASE dev;
 ```
 
 Clone the repo and install dependencies
@@ -34,10 +34,12 @@ Copy the `.env.sample` files in `.src/common/environments/` and remove `.sample`
 
 ```bash
 # for example
-DB_DB=nestport
-DB_PORT=5432
+DB_DB=dev
+DB_PORT=3307
 # and so on
 ```
+
+Also copy the `.env.sample` file in the project root and rename it `.env`, this env file is used outside the app (for migrations, docker, ...)
 
 If an environment variable isn't correctly set, a schema validator will throw an error telling you what needs to be changed
 
@@ -47,4 +49,4 @@ Start the server
 npm run start:dev
 ```
 
-A migration (`./src/database/migrations/0_init.ts`) creates the initial tables
+A migration creates the initial tables
