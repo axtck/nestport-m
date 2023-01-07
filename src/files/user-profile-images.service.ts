@@ -18,8 +18,13 @@ export class UserProfileImagesService {
   }
 
   public async create(userId: Id, filePath: string): Promise<void> {
-    const isActive = true; // TODO: when uploading a new profile picture, set others inactive (discuss)
-    await this.repository.create(userId, filePath, isActive);
+    await this.repository.deactivateAllByUserId(userId);
+    await this.repository.create(userId, filePath, true);
+  }
+
+  public async updateActive(id: Id, userId: Id): Promise<void> {
+    await this.repository.deactivateAllByUserId(userId);
+    await this.repository.activateOneById(id);
   }
 
   public async remove(userId: Id): Promise<void> {

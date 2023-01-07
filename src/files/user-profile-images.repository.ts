@@ -23,6 +23,16 @@ export class UserProfileImagesRepository extends Repository {
     return userProfileImageDb ? this.toUserProfileImage(userProfileImageDb) : null;
   }
 
+  public async activateOneById(id: Id): Promise<void> {
+    const deactivateQuery: QueryString = 'UPDATE user_images_profile SET is_active = TRUE WHERE id = ?';
+    await this.database.query(deactivateQuery, [id]);
+  }
+
+  public async deactivateAllByUserId(userId: Id): Promise<void> {
+    const deactivateQuery: QueryString = 'UPDATE user_images_profile SET is_active = FALSE WHERE user_id = ?';
+    await this.database.query(deactivateQuery, [userId]);
+  }
+
   public async create(userId: Id, filePath: string, isActive: boolean): Promise<void> {
     const createQuery: QueryString = 'INSERT INTO user_images_profile (user_id, file_path, is_active) VALUES (?, ?, ?)';
     await this.database.query(createQuery, [userId, filePath, isActive]);

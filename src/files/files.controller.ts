@@ -4,6 +4,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Res,
   UploadedFile,
   UseGuards,
@@ -24,25 +25,24 @@ import { UserProfileImagesService } from './user-profile-images.service';
 export class FilesController {
   constructor(private readonly userProfileImagesService: UserProfileImagesService) {}
 
-  @Get('user/:userId/images/profile')
+  @Get('/images/user/:userId/profile')
   public async findAllUserProfileImages(@Param('userId', ParseIntPipe) userId: Id): Promise<IUserProfileImage[]> {
     return this.userProfileImagesService.findAllByUserId(userId);
   }
 
-  @Get('user/images/profile/:id')
+  @Get('/images/user/profile/:id')
   public async findOneUserProfileImage(@Res() res: Response, @Param('id', ParseIntPipe) id: Id): Promise<void> {
     const image: IUserProfileImage = await this.userProfileImagesService.findOne(id);
     res.sendFile(path.join(__dirname, '..', '..', image.filePath));
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('user/images/profile')
+  @Post('/images/user/profile')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
         destination: './files/images/user/profile',
         filename: (_req, file, cb) => {
-          // TODO: maybe write logic to only accept files from specific mime types
           cb(null, `${generateUniqueIdentifier()}${path.extname(file.originalname)}`);
         },
       }),
@@ -50,5 +50,11 @@ export class FilesController {
   )
   public async uploadUserProfileImage(@User('id') id: Id, @UploadedFile() file: Express.Multer.File): Promise<void> {
     await this.userProfileImagesService.create(id, file.path);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/images/user/profile/active/:id')
+  public async updateActiveUserProfileImage(@Param('id', ParseIntPipe) id: Id, @User('id') userId: Id): Promise<void> {
+    await this.userProfileImagesService.updateActive(id, userId);
   }
 }
