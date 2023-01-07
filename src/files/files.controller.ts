@@ -1,7 +1,18 @@
-import { Controller, Get, Param, ParseIntPipe, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Res,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import * as path from 'path';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { User } from 'src/decorators/user.decorator';
 import { Id } from 'src/types/core.types';
@@ -12,9 +23,16 @@ import { UserProfileImagesService } from './user-profile-images.service';
 @Controller('files')
 export class FilesController {
   constructor(private readonly userProfileImagesService: UserProfileImagesService) {}
+
   @Get('user/:userId/images/profile')
   public async findAllUserProfileImages(@Param('userId', ParseIntPipe) userId: Id): Promise<IUserProfileImage[]> {
     return this.userProfileImagesService.findAllByUserId(userId);
+  }
+
+  @Get('user/images/profile/:id')
+  public async findOneUserProfileImage(@Res() res: Response, @Param('id', ParseIntPipe) id: Id): Promise<void> {
+    const image: IUserProfileImage = await this.userProfileImagesService.findOne(id);
+    res.sendFile(path.join(__dirname, '..', '..', image.filePath));
   }
 
   @UseGuards(JwtAuthGuard)
@@ -22,10 +40,10 @@ export class FilesController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './static/images/user/profile',
+        destination: './files/images/user/profile',
         filename: (_req, file, cb) => {
           // TODO: maybe write logic to only accept files from specific mime types
-          cb(null, `${generateUniqueIdentifier()}${extname(file.originalname)}`);
+          cb(null, `${generateUniqueIdentifier()}${path.extname(file.originalname)}`);
         },
       }),
     }),
