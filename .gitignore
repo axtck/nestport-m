@@ -5,8 +5,8 @@
 /src/common/environments/production.env
 
 # files
-/files/images
-/files/files
+/static/images
+/static/files
 
 # compiled output
 /dist

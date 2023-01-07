@@ -12,7 +12,7 @@ const bootstrap = async (): Promise<void> => {
 
   const app: INestApplication = await NestFactory.create<NestExpressApplication>(AppModule);
   const appConfig: IAppConfig = app.get(ConfigHelper).getAppConfig();
-  app.use('/files', express.static('files'));
+  app.use('/static', express.static('static'));
 
   await app.listen(appConfig.port);
   Logger.log(`Listening on port ${appConfig.port}, evironment: ${appConfig.environment}`, bootstrap.name);

@@ -14,8 +14,7 @@ export class UsersService {
   private readonly authConfig: IAuthConfig = this.configHelper.getAuthConfig();
 
   public async findAll(): Promise<IUser[]> {
-    const data: IUser[] = await this.usersRepository.findAll();
-    return data;
+    return this.usersRepository.findAll();
   }
 
   public async findOne(userId: Id): Promise<IUser> {
@@ -25,8 +24,7 @@ export class UsersService {
   }
 
   public async findOneByUsername(username: string): Promise<Null<ILoginUser>> {
-    const data: Null<ILoginUser> = await this.usersRepository.findOneByKey('username', username);
-    return data;
+    return this.usersRepository.findOneByKey('username', username);
   }
 
   public async create(createUserDto: CreateUserDto): Promise<void> {
