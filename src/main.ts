@@ -4,6 +4,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { ConfigHelper, IAppConfig } from './config/config.helper';
 import { connectionSource } from './ormconfig';
+import * as express from 'express';
 
 const bootstrap = async (): Promise<void> => {
   await connectionSource.initialize();
@@ -11,6 +12,7 @@ const bootstrap = async (): Promise<void> => {
 
   const app: INestApplication = await NestFactory.create<NestExpressApplication>(AppModule);
   const appConfig: IAppConfig = app.get(ConfigHelper).getAppConfig();
+  app.use('/files', express.static('files'));
 
   await app.listen(appConfig.port);
   Logger.log(`Listening on port ${appConfig.port}, evironment: ${appConfig.environment}`, bootstrap.name);
