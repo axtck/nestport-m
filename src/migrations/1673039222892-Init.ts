@@ -8,6 +8,8 @@ export class Init1673039222892 implements MigrationInterface {
         username VARCHAR(50) NOT NULL,
         email VARCHAR(100) NOT NULL,
         password VARCHAR(100) NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        modified_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (id),
         UNIQUE KEY (username),
         UNIQUE KEY (email)
@@ -18,6 +20,8 @@ export class Init1673039222892 implements MigrationInterface {
       CREATE TABLE roles (
         id INT NOT NULL,
         name VARCHAR(20) NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        modified_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (id)
       )
     `);
@@ -27,6 +31,8 @@ export class Init1673039222892 implements MigrationInterface {
         id INT NOT NULL AUTO_INCREMENT,
         user_id INT NOT NULL,
         role_id INT NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        modified_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (id),
         FOREIGN KEY (user_id) REFERENCES users (id),
         FOREIGN KEY (role_id) REFERENCES roles (id)

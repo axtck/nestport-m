@@ -19,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   public validate(payload: IJwtTokenSignature): IUserIdentifier {
     return {
       id: payload.sub,
-      username: payload.username,
+      identifier: payload.identifier,
     };
   }
 }

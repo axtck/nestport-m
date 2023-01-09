@@ -27,6 +27,10 @@ export class UsersService {
     return this.usersRepository.findOneByKey('username', username);
   }
 
+  public async findOneByEmail(email: string): Promise<Null<ILoginUser>> {
+    return this.usersRepository.findOneByKey('email', email);
+  }
+
   public async create(createUserDto: CreateUserDto): Promise<void> {
     await this.ensureUnique(createUserDto.email, createUserDto.username);
 

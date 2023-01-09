@@ -8,6 +8,8 @@ export class UserImagesProfile1673087034941 implements MigrationInterface {
         user_id INT NOT NULL,
         file_path VARCHAR(200) NOT NULL,
         is_active BOOL NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        modified_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (id),
         FOREIGN KEY (user_id) REFERENCES users(id)
       )

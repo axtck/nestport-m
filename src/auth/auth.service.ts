@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { ConfigHelper, IAuthConfig } from 'src/config/config.helper';
 import { Null } from 'src/types/core.types';
 import { ILoginUser } from 'src/users/interfaces/models/auth-user';
+import { emailRegex } from 'src/utils/pattern-utils';
 import { UsersService } from '../users/users.service';
 import { IJwtTokenSignature } from './interfaces/jwt-token-signature.interface';
 import { IUserIdentifier } from './interfaces/user-identifier.interface';
@@ -18,8 +19,10 @@ export class AuthService {
 
   private readonly authConfig: IAuthConfig = this.configHelper.getAuthConfig();
 
-  public async validateUser(username: string, password: string): Promise<Null<IUserIdentifier>> {
-    const user: Null<ILoginUser> = await this.usersService.findOneByUsername(username);
+  public async validateUser(identifier: string, password: string): Promise<Null<IUserIdentifier>> {
+    const user: Null<ILoginUser> = emailRegex.test(identifier)
+      ? await this.usersService.findOneByEmail(identifier)
+      : await this.usersService.findOneByUsername(identifier);
     if (!user) return null;
 
     const isMatch: boolean = await bcrypt.compare(password, user.password);
@@ -27,14 +30,15 @@ export class AuthService {
 
     return {
       id: user.id,
-      username: user.username,
+      identifier: identifier,
     };
   }
 
   public async getAccessToken(user: IUserIdentifier): Promise<string> {
+    console.log(user);
     const token: IJwtTokenSignature = {
       sub: user.id,
-      username: user.username,
+      identifier: user.identifier,
     };
 
     const options: JwtSignOptions = {

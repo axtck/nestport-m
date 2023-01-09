@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString, Matches, MaxLength } from 'class-validator';
+import { emailRegex } from 'src/utils/pattern-utils';
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
@@ -11,7 +12,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(64)
-  @Matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, {
+  @Matches(emailRegex, {
     message: 'email format invalid',
   })
   public email!: string;
