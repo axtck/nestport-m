@@ -16,7 +16,7 @@ import { diskStorage } from 'multer';
 import * as path from 'path';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { User } from 'src/decorators/user.decorator';
-import { Id } from 'src/types/core.types';
+import { Id, Null } from 'src/types/core.types';
 import { generateUniqueIdentifier } from 'src/utils/crypto-utils';
 import { IUserProfileImage } from './interfaces/models/UserProfileImage';
 import { UserProfileImagesService } from './user-profile-images.service';
@@ -34,6 +34,13 @@ export class FilesController {
   public async findOneUserProfileImage(@Res() res: Response, @Param('id', ParseIntPipe) id: Id): Promise<void> {
     const image: IUserProfileImage = await this.userProfileImagesService.findOne(id);
     res.sendFile(path.join(__dirname, '..', '..', image.filePath));
+  }
+
+  @Get('/images/user/:userId/profile/active')
+  public async findActiveUserProfileImages(
+    @Param('userId', ParseIntPipe) userId: Id,
+  ): Promise<Null<IUserProfileImage>> {
+    return this.userProfileImagesService.findActiveByUserId(userId);
   }
 
   @UseGuards(JwtAuthGuard)

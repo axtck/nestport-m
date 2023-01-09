@@ -17,6 +17,10 @@ export class UserProfileImagesService {
     return image;
   }
 
+  public async findActiveByUserId(userId: Id): Promise<Null<IUserProfileImage>> {
+    return this.repository.findActiveByUserId(userId);
+  }
+
   public async create(userId: Id, filePath: string): Promise<void> {
     await this.repository.deactivateAllByUserId(userId);
     await this.repository.create(userId, filePath, true);

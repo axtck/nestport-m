@@ -23,6 +23,15 @@ export class UserProfileImagesRepository extends Repository {
     return userProfileImageDb ? this.toUserProfileImage(userProfileImageDb) : null;
   }
 
+  public async findActiveByUserId(userId: Id): Promise<Null<IUserProfileImage>> {
+    const findQuery: QueryString = `
+      SELECT id, user_id, file_path, is_active
+      FROM user_images_profile where user_id = ? AND is_active = TRUE
+    `;
+    const userProfileImageDb: Null<IUserProfileImageDb> = await this.database.queryOne(findQuery, [userId]);
+    return userProfileImageDb ? this.toUserProfileImage(userProfileImageDb) : null;
+  }
+
   public async activateOneById(id: Id): Promise<void> {
     const deactivateQuery: QueryString = 'UPDATE user_images_profile SET is_active = TRUE WHERE id = ?';
     await this.database.query(deactivateQuery, [id]);

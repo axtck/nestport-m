@@ -9,29 +9,29 @@ import { ConfigHelper, IAuthConfig } from 'src/config/config.helper';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly usersRepository: UsersRepository, private readonly configHelper: ConfigHelper) {}
+  constructor(private readonly repository: UsersRepository, private readonly configHelper: ConfigHelper) {}
 
   private readonly authConfig: IAuthConfig = this.configHelper.getAuthConfig();
 
   public async findAll(): Promise<IUser[]> {
-    return this.usersRepository.findAll();
+    return this.repository.findAll();
   }
 
   public async findOne(userId: Id): Promise<IUser> {
-    const data: Null<IUser> = await this.usersRepository.findOne(userId);
+    const data: Null<IUser> = await this.repository.findOne(userId);
     if (!data) throw new Error('User not found');
     return data;
   }
 
   public async findOneByUsername(username: string): Promise<Null<ILoginUser>> {
-    return this.usersRepository.findOneByKey('username', username);
+    return this.repository.findOneByKey('username', username);
   }
 
   public async findOneByEmail(email: string): Promise<Null<ILoginUser>> {
-    return this.usersRepository.findOneByKey('email', email);
+    return this.repository.findOneByKey('email', email);
   }
 
-  public async create(createUserDto: CreateUserDto): Promise<void> {
+  public async create(createUserDto: CreateUserDto): Promise<IUser> {
     await this.ensureUnique(createUserDto.email, createUserDto.username);
 
     const hashedPassword: string = await bcrypt.hash(createUserDto.password, this.authConfig.saltRounds);
@@ -41,19 +41,27 @@ export class UsersService {
       password: hashedPassword,
     };
 
-    await this.usersRepository.create(userWithHashedPassword);
+    await this.repository.create(userWithHashedPassword);
+    const createdUser: Null<ILoginUser> = await this.repository.findOneByKey(
+      'username',
+      userWithHashedPassword.username,
+    );
+
+    if (!createdUser) throw new Error('User not created');
+    const { password, ...withoutPassword } = createdUser;
+    return withoutPassword;
   }
 
   public async remove(userId: Id): Promise<void> {
-    await this.usersRepository.remove(userId);
+    await this.repository.remove(userId);
   }
 
   private async ensureUnique(email: string, username: string): Promise<void> {
-    if (await this.usersRepository.findOneByKey('email', email)) {
+    if (await this.repository.findOneByKey('email', email)) {
       throw new HttpException('email already in use', HttpStatus.CONFLICT);
     }
 
-    if (await this.usersRepository.findOneByKey('username', username)) {
+    if (await this.repository.findOneByKey('username', username)) {
       throw new HttpException('username already in use', HttpStatus.CONFLICT);
     }
   }

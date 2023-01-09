@@ -5,9 +5,9 @@ export class Init1673039222892 implements MigrationInterface {
     await queryRunner.query(`
       CREATE TABLE users (
         id INT NOT NULL AUTO_INCREMENT,
-        username VARCHAR(50) NOT NULL,
-        email VARCHAR(100) NOT NULL,
-        password VARCHAR(100) NOT NULL,
+        username VARCHAR (50) NOT NULL,
+        email VARCHAR (100) NOT NULL,
+        password VARCHAR (100) NOT NULL,
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         modified_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (id),
@@ -19,7 +19,7 @@ export class Init1673039222892 implements MigrationInterface {
     await queryRunner.query(`
       CREATE TABLE roles (
         id INT NOT NULL,
-        name VARCHAR(20) NOT NULL,
+        name VARCHAR (20) NOT NULL,
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         modified_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (id)

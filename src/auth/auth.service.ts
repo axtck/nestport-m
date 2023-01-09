@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { ConfigHelper, IAuthConfig } from 'src/config/config.helper';
-import { Null } from 'src/types/core.types';
+import { Id, Null } from 'src/types/core.types';
 import { ILoginUser } from 'src/users/interfaces/models/auth-user';
 import { emailRegex } from 'src/utils/pattern-utils';
 import { UsersService } from '../users/users.service';
@@ -34,7 +34,7 @@ export class AuthService {
     };
   }
 
-  public async getAccessToken(user: IUserIdentifier): Promise<string> {
+  public async getAccessToken(user: IUserIdentifier): Promise<{ userId: Id; token: string }> {
     const token: IJwtTokenSignature = {
       sub: user.id,
       identifier: user.identifier,
@@ -44,6 +44,9 @@ export class AuthService {
       expiresIn: this.authConfig.jwtExpiry,
     };
 
-    return this.jwtTokenService.sign(token, options);
+    return {
+      userId: user.id,
+      token: this.jwtTokenService.sign(token, options),
+    };
   }
 }
