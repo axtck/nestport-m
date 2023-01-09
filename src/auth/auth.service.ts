@@ -35,7 +35,6 @@ export class AuthService {
   }
 
   public async getAccessToken(user: IUserIdentifier): Promise<string> {
-    console.log(user);
     const token: IJwtTokenSignature = {
       sub: user.id,
       identifier: user.identifier,
