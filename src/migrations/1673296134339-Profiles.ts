@@ -9,7 +9,6 @@ export class Profiles1673296134339 implements MigrationInterface {
         first_name varchar (30) NULL,
         last_name varchar (30) NULL,
         date_of_birth DATE NULL,
-        avatar_color char (6) NOT NULL,
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         modified_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (id),

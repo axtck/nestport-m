@@ -7,7 +7,7 @@ import { IProfile } from './interfaces/models/profile';
 export class ProfilesRepository extends Repository {
   public async findOneByUserId(userId: Id): Promise<Null<IProfile>> {
     const findQuery: QueryString = `
-      SELECT id, user_id, first_name, last_name, date_of_birth, avatar_color
+      SELECT id, user_id, first_name, last_name, date_of_birth
       FROM profiles WHERE user_id = ?
     `;
     const userDb: Null<IProfileDb> = await this.database.queryOne<IProfileDb>(findQuery, [userId]);
@@ -15,7 +15,7 @@ export class ProfilesRepository extends Repository {
   }
 
   public async insertBase(userId: Id, avatarColor: string): Promise<void> {
-    const createQuery: QueryString = 'INSERT INTO profiles (user_id, avatar_color) VALUES (?, ?)';
+    const createQuery: QueryString = 'INSERT INTO profiles (user_id) VALUES (?, ?)';
     await this.database.query(createQuery, [userId, avatarColor]);
   }
 
@@ -31,7 +31,6 @@ export class ProfilesRepository extends Repository {
       firstName: profileDb.first_name,
       lastName: profileDb.last_name,
       dateOfBirth: profileDb.date_of_birth,
-      avatarColor: profileDb.avatar_color,
     };
   }
 }
@@ -42,5 +41,4 @@ interface IProfileDb {
   first_name: Null<string>;
   last_name: Null<string>;
   date_of_birth: Null<Date>;
-  avatar_color: string;
 }

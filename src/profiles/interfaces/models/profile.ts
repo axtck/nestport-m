@@ -6,5 +6,4 @@ export interface IProfile {
   firstName: Null<string>;
   lastName: Null<string>;
   dateOfBirth: Null<Date>;
-  avatarColor: string;
 }
