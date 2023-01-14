@@ -14,9 +14,9 @@ export class ProfilesRepository extends Repository {
     return userDb ? this.toProfile(userDb) : null;
   }
 
-  public async insertBase(userId: Id, avatarColor: string): Promise<void> {
-    const createQuery: QueryString = 'INSERT INTO profiles (user_id) VALUES (?, ?)';
-    await this.database.query(createQuery, [userId, avatarColor]);
+  public async insertBase(userId: Id): Promise<void> {
+    const createQuery: QueryString = 'INSERT INTO profiles (user_id) VALUES (?)';
+    await this.database.query(createQuery, [userId]);
   }
 
   public async remove(id: Id): Promise<void> {

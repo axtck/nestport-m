@@ -50,7 +50,7 @@ export class FilesController {
       storage: diskStorage({
         destination: './files/images/user/profile',
         filename: (_req, file, cb) => {
-          cb(null, `${generateUniqueIdentifier()}${path.extname(file.originalname)}`);
+          cb(null, `${generateUniqueIdentifier()}${path.extname(file.originalname)}.png`);
         },
       }),
     }),
