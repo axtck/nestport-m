@@ -43,6 +43,33 @@ export class Init1673039222892 implements MigrationInterface {
       INSERT INTO roles (id, name)
       VALUES (1, 'user'), (2, 'admin'), (3, 'moderator')
     `);
+
+    await queryRunner.query(`
+      CREATE TABLE profiles (
+        user_id INT NOT NULL,
+        first_name varchar (30) NULL,
+        last_name varchar (30) NULL,
+        date_of_birth DATE NULL,
+        should_display_username BOOL NOT NULL DEFAULT TRUE,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        modified_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (user_id),
+        FOREIGN KEY (user_id) REFERENCES users (id)
+      )
+    `);
+
+    await queryRunner.query(`
+      CREATE TABLE user_images_profile(
+        id INT NOT NULL AUTO_INCREMENT,
+        user_id INT NOT NULL,
+        file_path VARCHAR (200) NOT NULL,
+        is_active BOOL NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        modified_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        FOREIGN KEY (user_id) REFERENCES users (id)
+      )
+    `);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
